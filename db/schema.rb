@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20140907143125) do
   create_table "user_identities", force: true do |t|
     t.integer  "user_id",    null: false
     t.integer  "email_id",   null: false
-    t.integer  "uid",        null: false
+    t.string   "uid",        null: false
     t.string   "provider",   null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

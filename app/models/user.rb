@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   end
 
   def email= email
-    self.default_email = emails.where(email: email, user: self).first_or_initialize
+    self.default_email = Email.where(email: email).first_or_initialize
   end
 
   def self.having_email email
@@ -36,6 +36,50 @@ class User < ActiveRecord::Base
     else
       super(warden_conditions)
     end
+  end
+
+  def self.from_omniauth auth
+
+    email = Email
+      .includes(:user)
+      .where(email: auth.info.email)
+      .first_or_initialize
+
+    ui = UserIdentity
+      .where(provider: auth.provider, uid: auth.uid)
+      .first_or_initialize
+
+    if ui.persisted?
+      # Existing user, Existing social identity
+      if ! email.persisted?
+        # Email changed on third party site
+        email.user = ui.user
+        email.save!
+        ui.email = email
+      elsif email.user == ui.user
+        ui.user
+      else
+        raise Exceptions::EmailConflict.new        
+      end
+    elsif email.persisted?
+      # Existing User, new identity
+      ui.user = email.user
+      ui.save!
+      ui.user
+    else
+      # New user new identity
+      email.save!
+      user = User.new(
+        password: Devise.friendly_token[0,20],
+        default_email: email
+      )
+      user.save!
+      ui.user = user
+      ui.email = email
+      ui.save!
+    end
+
+    ui.user
   end
 
   private
