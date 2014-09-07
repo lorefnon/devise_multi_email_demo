@@ -17,7 +17,9 @@ class User < ActiveRecord::Base
   end
 
   def email= email
-    self.default_email = Email.where(email: email).first_or_initialize
+    self.default_email = Email
+      .where(email: email)
+      .first_or_initialize
   end
 
   def self.having_email email
@@ -59,7 +61,7 @@ class User < ActiveRecord::Base
       elsif email.user == ui.user
         ui.user
       else
-        raise Exceptions::EmailConflict.new        
+        raise Exceptions::EmailConflict
       end
     elsif email.persisted?
       # Existing User, new identity
@@ -85,7 +87,11 @@ class User < ActiveRecord::Base
   private
 
   def save_default_email
-    default_email.user = self
+    if default_email.user.blank?
+      default_email.user = self
+    elsif default_email.user != self
+      raise Exceptions::EmailConflict
+    end
     default_email.save!
   end
 
