@@ -85,6 +85,8 @@ GEM
     debug_inspector (0.0.2)
     debugger-linecache (1.2.0)
     diff-lcs (1.2.5)
+    email_validator (1.4.0)
+      activemodel
     erubis (2.7.0)
     execjs (2.2.1)
     gherkin (2.12.2)
@@ -210,6 +212,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   devise!
+  email_validator
   jbuilder (~> 2.0)
   jquery-rails
   pg
