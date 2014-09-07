@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   has_many :emails, dependent: :destroy
   after_commit :save_default_email, on: :create
 
+  accepts_nested_attributes_for :emails, reject_if: :all_blank, allow_destroy: true
+
   belongs_to :default_email, class_name: "Email"
   validates :default_email, presence: true
   default_scope { includes :default_email }

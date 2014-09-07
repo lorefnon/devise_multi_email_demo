@@ -32,6 +32,7 @@ gem 'omniauth-facebook'
 # Use Rails Html Sanitizer for HTML sanitization
 gem 'rails-html-sanitizer', '~> 1.0'
 gem 'email_validator', :require => 'email_validator/strict'
+gem 'cocoon'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
