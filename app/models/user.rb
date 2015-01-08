@@ -68,6 +68,7 @@ class User < ActiveRecord::Base
     elsif email.persisted?
       # Existing User, new identity
       ui.user = email.user
+      ui.email = email
       ui.save!
       ui.user
     else
